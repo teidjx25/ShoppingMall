@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <mapper namespace="com.company.shoppingmall.mapper.orderMapper">
+  
+	  <insert id="insert">
+		insert into prodb2.order(buyPN,buyCheck,buyNum,totalPrice,buyId,buyName,buyAddress,buyTel,buyCode,regDate)
+	 		values(#{buyPN},#{buyCheck},#{buyNum},#{totalPrice},#{buyId},#{buyName},#{buyAddress},#{buyTel},#{buyCode},now())
+	   </insert>
+	<!--찿기-->
+	<select id="buyList" resultType="com.company.shoppingmall.dto.orderDTO">
+		select * from prodb2.order
+		where buyId = #{buyId}
+	 	order by regDate desc, totalPrice desc limit #{startRow}, #{pageSize}
+	</select>
+
+	<select id="buyCount" resultType="int">
+	  select count(*) from prodb2.order where buyId = #{buyId}
+	</select>
+	  	
+	<select id="sumCount" resultType="int">
+		SELECT ifnull(sum(totalPrice),0)from prodb2.order where buyId = #{buyId}
+	</select>
+	
+	<select id="OfindByNum" resultType="com.company.shoppingmall.dto.orderDTO">
+		SELECT * from prodb2.order where idbuyProduct = #{num}
+	</select>
+   </mapper>
+ 

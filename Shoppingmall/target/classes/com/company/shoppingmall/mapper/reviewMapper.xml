@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <mapper namespace="com.company.shoppingmall.mapper.reviewMapper">
+  
+ 	  <sql id="group">
+  	GROUP BY bnum;
+ 	 </sql>
+ 	   
+   <sql id="update">
+  	 <if test="reLev!=null ">
+ 		,reLev = #{reLev}
+ 	</if>
+  </sql>
+ 	 
+
+  
+	<insert id="insert" >
+	insert into review( grade, name, comment, reRef, reLev, reSeq, bnum, Rdate, reviewImg) 
+	 values(#{grade}, #{name},#{comment},#{bnum},#{reLev}, #{reSeq},#{bnum},now(),#{reviewImg})
+  </insert>
+  
+  
+  
+	<!--찿기-->
+	<select id="list" resultType="com.company.shoppingmall.dto.reviewDTO">
+		select * from review
+	    where bnum = #{pId}
+	    order by reLev desc limit #{startRow}, #{pageSize}
+	</select>
+	
+	<select id="getCount" resultType="int">
+	  select count(*) from review where bnum = #{bnum}
+	</select>
+	
+
+	
+	<select id="avgReview" resultType="int">
+	  select  AVG(grade) from review where bnum=#{pId} <include refid="group"/>
+	</select>
+	
+	
+	  <!-- 상세보기 -->
+	  <select id="findByNum" resultType="com.company.shoppingmall.dto.reviewDTO">
+	  	SELECT * FROM review WHERE cnum=#{cnum}
+ 	 </select>
+ 	 
+ 	     <!-- 수정 -->
+    <update id="update">
+    	UPDATE review SET grade = #{grade}, comment=#{comment},reviewImg=#{reviewImg}  <include refid="update"/> 
+    	 WHERE cnum=#{cnum}
+   		
+    </update>
+    
+    <delete id="delete">
+  		delete from review where cnum = #{cnum}
+  	</delete>
+  
+   </mapper>
+ 

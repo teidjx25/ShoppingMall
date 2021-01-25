@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <mapper namespace="com.company.shoppingmall.mapper.orderCartMapper">
+  
+  
+   <sql id="allOrNot">
+
+  	
+ 	<if test="startRow!=null or pageSize!=null">
+ 		limit #{startRow}, #{pageSize}
+ 	</if>
+ 	
+
+
+  </sql>
+  
+	  <insert id="cartProduct">
+		insert into prodb2.order_cart(mId,pId,cQTY,oRegDate,pName)
+	 		values(#{mId},#{pId},#{cQTY},now(),#{pName})
+	   </insert>
+	   
+	<!--찿기
+	<select id="cartList" resultType="com.company.shoppingmall.dto.order_cartDTO">
+		select * from prodb2.order_cart
+		where mId = #{mId}
+	 	order by oRegDate desc, mId desc limit #{startRow}, #{pageSize}
+	</select>
+	-->
+	<select id="cartList" resultType="com.company.shoppingmall.dto.order_cartDTO">
+	select c.idcart, c.mId, c.pId, c.cQTY,c.oRegDate,p.pName,p.pPrice,p.pQTY,p.discount
+        from prodb2.order_cart c,prodb2.product p
+		where c.mId = #{mId} and c.pId=p.pId 
+		order by c.oRegDate desc <include refid="allOrNot"/> 
+	</select> 	
+	 	
+		<select id="findbyMember" resultType="com.company.shoppingmall.dto.order_cartDTO">
+		select * from prodb2.order_cart
+		where mId = #{mId} and pId =#{pId}
+	 	
+	</select>
+	
+    <update id="cartUpdate">
+    	UPDATE prodb2.order_cart SET cQTY = #{cQTY} WHERE mId = #{mId} and pId =#{pId}
+    </update>
+
+    <delete id="cartDeleteOne">
+  		delete from prodb2.order_cart where mId = #{mId} and pId =#{pId}
+  	</delete>
+	  	
+    <delete id="cartDeleteAll">
+  		delete from prodb2.order_cart where mId = #{mId}
+  	</delete>
+	
+	<select id="cartCount" resultType="int">
+		select count(*) from prodb2.order_cart where mId = #{mId}
+	</select>
+	
+	<select id="sumCart" resultType="int">
+		SELECT ifnull(CAST(sum(p.pPrice*((100-p.discount)/100)*c.cQTY) AS signed integer) ,0)
+		from prodb2.order_cart c,prodb2.product p
+		where c.mId = #{buyId} and c.pId=p.pId 
+	</select>
+   </mapper>
+ 

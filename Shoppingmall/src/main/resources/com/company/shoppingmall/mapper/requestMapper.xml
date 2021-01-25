@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <mapper namespace="com.company.shoppingmall.mapper.requestMapper">
+  
+   <sql id="update">
+  	 <if test="state!=null ">
+ 		,state = #{state}
+ 	</if>
+  </sql>
+
+ 	 
+ 	 
+		<select id="max" resultType="int"> 	 
+		select ifnull(max(qnum+1),0) from request
+		</select>  
+		
+	<insert id="insert" >
+	insert into request( title, name, password, category, reRef, reLev, reSeq, bnum, contents,qRdate,requestImg,state) 
+	 values(#{title}, #{name},#{password},#{category},#{reRef}, #{reLev}, #{reSeq},#{bnum},#{contents},now(),#{requestImg},#{state})
+  </insert>
+  
+
+  
+	<!--찿기-->
+	<select id="list" resultType="com.company.shoppingmall.dto.requestDTO">
+		select * from request
+	    where bnum = #{pId}
+	    order by reRef desc, reLev asc limit #{startRow}, #{pageSize}
+	</select>
+	
+	<select id="getCount" resultType="int">
+	  select count(*) from request where bnum = #{bnum}
+	</select>
+		
+	
+	  <!-- 상세보기 -->
+	  <select id="findByNum" resultType="com.company.shoppingmall.dto.requestDTO">
+	  	SELECT * FROM request WHERE qnum=#{qnum}
+ 	 </select>
+ 	 
+ 	     <!-- 수정 -->
+    <update id="update">
+    	UPDATE request SET title = #{title}, category=#{category},contents=#{contents},requestImg=#{requestImg},state=#{state},reRef=#{reRef} <include refid="update"/> 
+    	WHERE qnum=#{qnum}
+   		
+    </update>
+    
+    <delete id="delete">
+  		delete from request where qnum = #{qnum}
+  	</delete>
+   </mapper>
+   
+   
+ 

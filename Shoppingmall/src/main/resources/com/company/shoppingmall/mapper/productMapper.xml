@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <mapper namespace="com.company.shoppingmall.mapper.productMapper">
+  
+    <sql id="search">
+  	<where>
+  	 <if test="promotion!=10 ">
+  	 and promotion = #{promotion} 
+ 	</if>
+  	 <if test="productType!=0 ">
+ 		and productType = #{productType}
+ 	</if>
+  	 <if test="category!=null ">
+ 		and category = #{category}
+ 	</if>
+ 	 <if test="mId!=null">
+ 		and maker = #{mId}
+ 	</if>
+ 	
+ 	<if test="word!=null and field =='product'">
+ 		and pName like CONCAT ('%',#{word},'%' )
+ 	</if>
+ 	 <if test="word!=null and field =='maker'">
+ 		and maker like CONCAT ('%',#{word},'%' )
+ 	</if>
+ 	</where>
+  </sql>
+  
+      <sql id="update">
+
+  	 <if test="discount!=null ">
+ 		,discount = #{discount}
+ 	</if>
+ 	 <if test="promotion!=null ">
+ 		,promotion = #{promotion}
+ 	</if>
+
+  </sql>
+
+  
+	<insert id="productInsert" >
+	insert into product( pName, pPrice, discount, bimg, pContent,recomendC, pQTY, maker, productType, promotion, category, regdate,pBuyCnt) 
+	 values(#{pName}, #{pPrice},#{discount},#{bimg},#{pContent},#{recomendC}, #{pQTY},#{maker},#{productType},#{promotion}, #{category},now(),0)
+  </insert>
+	<!--찿기-->
+	<select id="list" resultType="com.company.shoppingmall.dto.ProductDTO">
+		select * from product
+	  <include refid="search"/>
+	  order by pId desc limit #{startRow}, #{pageSize}
+	</select>
+	
+	<select id="getCount" resultType="int">
+	  select count(*) from product <include refid="search"/>
+	</select>
+	
+	
+	  <!-- 상세보기 -->
+	  <select id="findByNum" resultType="com.company.shoppingmall.dto.ProductDTO">
+	  	SELECT * FROM product WHERE pId=#{pId}
+ 	 </select>
+ 	 
+ 	     <!-- 수정 -->
+    <update id="update">
+    	UPDATE product 
+    	SET pName = #{pName}, pPrice=#{pPrice}, pContent = #{pContent}, recomendC=#{recomendC}, pQTY = #{pQTY}, productType = #{productType}
+    	,pBuyCnt = #{pBuyCnt}, maker= #{maker}, category = #{category}, bimg=#{bimg} <include refid="update"/>
+    	WHERE pId=#{pId}
+   		
+    </update>
+    
+    <delete id="delete">
+  		delete from product where pId = #{id}
+  	</delete>
+
+
+ 	 
+  	
+  	
+   </mapper>
+ 
