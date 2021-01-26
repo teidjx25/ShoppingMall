@@ -120,29 +120,7 @@ public class productRepositoryImpl implements productRepository{
 		orderCartMapper.cartUpdate(orderCart);
 	}
 
-	@Override
-	public void cartDeleteOne(order_cartDTO orderCart) {
-		// TODO Auto-generated method stub
-		orderCartMapper.cartDeleteOne(orderCart);
-	}
-
-	@Override
-	public void cartDeleteAll(order_cartDTO orderCart) {
-		// TODO Auto-generated method stub
-		orderCartMapper.cartDeleteAll(orderCart);
-	}
-
-	@Override
-	public int cartCount(String buyId) {
-		// TODO Auto-generated method stub
-		return orderCartMapper.cartCount(buyId);
-	}
-
-	@Override
-	public int sumCart(String buyId) {
-		// TODO Auto-generated method stub
-		return orderCartMapper.sumCart(buyId);
-	}
+	
 	
 	
 
